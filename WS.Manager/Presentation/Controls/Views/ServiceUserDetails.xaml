@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="WS.Manager.Presentation.Controls.Views.ServiceUserDetails"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:WS.Manager.Presentation.Behaviors"
+             xmlns:viewModels="clr-namespace:WS.Manager.Presentation.Controls.ViewModels"
+             d:DataContext="{d:DesignInstance viewModels:ServiceUserDetailsViewModel}"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="DisabledLocalSystemStyle" TargetType="{x:Type FrameworkElement}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLocalSystemAccount}" Value="True">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsLocalSystemAccount}" Value="False">
+                    <Setter Property="IsEnabled" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers> 
+        </Style>
+    </UserControl.Resources>
+    <StackPanel>
+        <CheckBox Content="Local system account" IsChecked="{Binding IsLocalSystemAccount}" />
+        <Label Content="User name" Style="{StaticResource DisabledLocalSystemStyle}" />
+        <TextBox Text="{Binding UserName}" Style="{StaticResource DisabledLocalSystemStyle}"/>
+        <Label Content="User password" Style="{StaticResource DisabledLocalSystemStyle}" />
+        <PasswordBox Style="{StaticResource DisabledLocalSystemStyle}">
+            <i:Interaction.Behaviors>
+                <behaviors:PasswordBehavior Password="{Binding UserPassword, Mode=TwoWay}" />
+            </i:Interaction.Behaviors>
+        </PasswordBox>
+    </StackPanel>
+</UserControl>

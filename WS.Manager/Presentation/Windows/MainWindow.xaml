@@ -1,0 +1,106 @@
+﻿<Window x:Class="WS.Manager.Presentation.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:behaviors="clr-namespace:WS.Manager.Presentation.Behaviors"
+        xmlns:converters="clr-namespace:WS.Manager.Presentation.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:prism="clr-namespace:WS.Manager.Prism"
+        xmlns:viewModels="clr-namespace:WS.Manager.Presentation.ViewModels"
+        xmlns:views="clr-namespace:WS.Manager.Presentation.Views"
+        xmlns:controls="clr-namespace:WS.Manager.Presentation.Controls"
+        xmlns:views1="clr-namespace:WS.Manager.Presentation.Controls.Views"
+        x:Name="ServiceWindow"
+        Title="Service Manager. (by Sergey Vaulin, www.devowl.net)"
+        Width="725"
+        Height="550"
+        d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{prism:CommandBinding RefreshCommand}" />
+        <KeyBinding Key="Escape" Command="{prism:CommandBinding ExitCommand}" />
+    </Window.InputBindings>
+    <Grid>
+        <DockPanel>
+            <Menu Height="25"
+                  VerticalAlignment="Top"
+                  DockPanel.Dock="Top">
+                <MenuItem Header="Service">
+                    <MenuItem Header="New" />
+                    <MenuItem Command="{Binding EditCommand}" Header="Edit" />
+                    <MenuItem Header="Open Project">
+                        <MenuItem Header="WinForms" />
+                        <MenuItem Header="WPF" />
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Command="{Binding ExitCommand}" Header="Exit" />
+                </MenuItem>
+            </Menu>
+            <StatusBar DockPanel.Dock="Bottom">
+                <StatusBarItem>
+                    <TextBlock>
+                        Service count:<Run Text="{Binding Path=Services.Count, Mode=OneWay}" />
+                    </TextBlock>
+                </StatusBarItem>
+            </StatusBar>
+            <ScrollViewer Height="115"
+                          DockPanel.Dock="Bottom"
+                          VerticalScrollBarVisibility="Auto"
+                          Visibility="{Binding ElementName=ServiceList,
+                                               Path=SelectedItem,
+                                               Converter={StaticResource NullToVisibilityConverter}}" >
+                <views1:ServiceDetails DataContext="{Binding ElementName=ServiceWindow, Path=DataContext.SelectedService}" />
+            </ScrollViewer>            
+            <ListView x:Name="ServiceList"
+                      Margin="5,0"
+                      ItemsSource="{Binding Services}"
+                      SelectedItem="{Binding SelectedService}">
+                <ListView.ContextMenu>
+                    <ContextMenu Name="ZoneIformationList"
+                                 Background="WhiteSmoke"
+                                 StaysOpen="true">
+                        <MenuItem Command="{Binding StartCommand}" Header="Start" />
+                        <MenuItem Command="{Binding StartWithArgumentsCommand}" Header="Start with arguments" />
+                        <MenuItem Command="{Binding StopCommand}" Header="Stop" />
+                        <MenuItem Command="{Binding TerminateCommand}" Header="Terminate" />
+                        <Separator />
+                        <MenuItem Command="{Binding EditCommand}" Header="Edit" />
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="100"
+                                        DisplayMemberBinding="{Binding ServiceName,
+                                                                       Mode=OneWay}"
+                                        Header="Service name" />
+                        <GridViewColumn Width="175"
+                                        DisplayMemberBinding="{Binding DisplayName,
+                                                                       Mode=OneWay}"
+                                        Header="Display name" />
+                        <GridViewColumn Width="85"
+                                        DisplayMemberBinding="{Binding Status,
+                                                                       Mode=OneWay}"
+                                        Header="Status" />
+                        <GridViewColumn Width="100"
+                                        DisplayMemberBinding="{Binding StartupType,
+                                                                       Mode=OneWay}"
+                                        Header="Startup Type" />
+                        <GridViewColumn Width="405"
+                                        DisplayMemberBinding="{Binding Description,
+                                                                       Mode=OneWay}"
+                                        Header="Description" />
+                    </GridView>
+                </ListView.View>
+                <i:Interaction.Behaviors>
+                    <behaviors:ListViewSortableColumnsBehavior />
+                </i:Interaction.Behaviors>
+            </ListView>
+        </DockPanel>
+        <views:WaitView Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    </Grid>
+</Window>
