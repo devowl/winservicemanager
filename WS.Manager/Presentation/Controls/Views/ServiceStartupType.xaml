@@ -12,8 +12,6 @@
         <ComboBox SelectedItem="{Binding StartMode, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" >
             <ComboBox.ItemsSource>
                 <x:Array Type="{x:Type serviceProcess:ServiceStartMode}">
-                    <serviceProcess:ServiceStartMode>Boot</serviceProcess:ServiceStartMode>
-                    <serviceProcess:ServiceStartMode>System</serviceProcess:ServiceStartMode>
                     <serviceProcess:ServiceStartMode>Automatic</serviceProcess:ServiceStartMode>
                     <serviceProcess:ServiceStartMode>Manual</serviceProcess:ServiceStartMode>
                     <serviceProcess:ServiceStartMode>Disabled</serviceProcess:ServiceStartMode>

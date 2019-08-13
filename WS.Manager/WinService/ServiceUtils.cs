@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.ServiceProcess;
+
+using WS.Manager.WinService.WinApi;
+
 using static WS.Manager.WinService.WinApi.NativeMethods;
 
 namespace WS.Manager.WinService
@@ -36,6 +40,26 @@ namespace WS.Manager.WinService
             finally
             {
                 Marshal.FreeHGlobal(argv);
+            }
+        }
+
+        /// <summary>
+        /// Конвертация <see cref="ServiceStartMode"/> to <see cref="ServiceBootFlag"/>.
+        /// </summary>
+        /// <param name="startMode"><see cref="ServiceStartMode"/> mode.</param>
+        /// <returns><see cref="ServiceBootFlag"/> flag.</returns>
+        public static ServiceBootFlag ToServiceBootFlag(this ServiceStartMode startMode)
+        {
+            switch (startMode)
+            {
+                case ServiceStartMode.Manual:
+                    return ServiceBootFlag.DemandStart;
+                case ServiceStartMode.Automatic:
+                    return ServiceBootFlag.AutoStart;
+                case ServiceStartMode.Disabled:
+                    return ServiceBootFlag.Disabled;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(startMode), startMode, null);
             }
         }
     }

@@ -99,10 +99,8 @@ namespace WS.Manager.WinService
                     return GetErrorDescription(GetLastError());
                 }
 
-                uint dwBytesNeeded;
-
                 // Determine the buffer size needed
-                QueryServiceConfig2(service, SERVICE_CONFIG_DESCRIPTION, IntPtr.Zero, 0, out dwBytesNeeded);
+                QueryServiceConfig2(service, SERVICE_CONFIG_DESCRIPTION, IntPtr.Zero, 0, out var dwBytesNeeded);
 
                 var ptr = Marshal.AllocHGlobal((int)dwBytesNeeded);
                 QueryServiceConfig2(service, SERVICE_CONFIG_DESCRIPTION, ptr, dwBytesNeeded, out dwBytesNeeded);
@@ -115,7 +113,7 @@ namespace WS.Manager.WinService
         }
 
         /// <summary>
-        /// Change service display name.
+        /// Change service properties.
         /// </summary>
         /// <param name="serviceName">Service name.</param>
         /// <param name="displayName">Service display name.</param>
@@ -123,7 +121,7 @@ namespace WS.Manager.WinService
         /// <param name="binaryPathName">Путь к исполняемому файлу.</param>
         /// <param name="userName">Имя пользователя.</param>
         /// <param name="userPassword">Пароль пользователя.</param>
-        public static void ChangeServiceDisplayName(
+        public static void ChangeServiceProperties(
             string serviceName,
             string displayName,
             ServiceBootFlag bootFlag,
@@ -298,7 +296,7 @@ namespace WS.Manager.WinService
             {
                 if (GetServiceStatus(serviceObject.Service) == ServiceState.Running)
                 {
-                    StopService(serviceObject.Service);
+                    TerminateService(serviceName);
                 }
 
                 if (!DeleteService(serviceObject.Service))

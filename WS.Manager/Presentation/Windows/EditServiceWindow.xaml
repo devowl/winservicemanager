@@ -28,6 +28,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition />
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -35,18 +36,23 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel>
-            <Label Content="Name"/>
-            <TextBox Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}" />
+            <Label Content="Service Name"/>
+            <TextBox Text="{Binding Name, Mode=OneWay}" IsEnabled="False" IsReadOnly="True" />
         </StackPanel>
         <StackPanel Grid.Row="1">
+            <Label Content="Display Name"/>
+            <TextBox Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+        <StackPanel Grid.Row="2">
             <Label Content="Description"/>
             <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Height="100" Style="{StaticResource MultiLineTextBoxStyle}" />
         </StackPanel>
-        <views:ServiceUserDetails Grid.Row="2" DataContext="{Binding ElementName=Window, Path=DataContext.ServiceUser}" />
-        <views:ServiceFilePath Grid.Row="3" DataContext="{Binding ElementName=Window, Path=DataContext.ServiceFilePath}"/>
-        <views:ServiceStartupType Grid.Row="4" DataContext="{Binding ElementName=Window, Path=DataContext.ServiceStartupType}"/>
-        <StackPanel Grid.Row="5">
-            <Button Content="OK" Width="50" Command="{Binding OkCommand}" />
+        <views:ServiceUserDetails Grid.Row="3" DataContext="{Binding ElementName=Window, Path=DataContext.ServiceUser}" />
+        <views:ServiceFilePath Grid.Row="4" DataContext="{Binding ElementName=Window, Path=DataContext.ServiceFilePath}"/>
+        <views:ServiceStartupType Grid.Row="5" DataContext="{Binding ElementName=Window, Path=DataContext.ServiceStartupType}"/>
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Change" Width="75" Command="{Binding ChangeCommand}" Margin="5" />
+            <Button Content="Cancel" Width="75" Command="{Binding CancelCommand}" Margin="5"/>
         </StackPanel>
     </Grid>
 </Window>

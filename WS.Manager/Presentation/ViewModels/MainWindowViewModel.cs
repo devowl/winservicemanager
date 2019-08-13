@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,6 +29,10 @@ namespace WS.Manager.Presentation.ViewModels
 
         private ServiceModel _selectedService;
 
+        private const string WarrningText = "Warrning";
+
+        private object _refreshSyncObject = new object();
+
         /// <summary>
         /// Constructor for <see cref="MainWindowViewModel"/>.
         /// </summary>
@@ -36,6 +42,7 @@ namespace WS.Manager.Presentation.ViewModels
             StartCommand = new DelegateCommand(o => ExecuteServiceOperation(StartService), HasSelectedItem);
             StopCommand = new DelegateCommand(o => ExecuteServiceOperation(StopService), HasSelectedItem);
             EditCommand = new DelegateCommand(o => EditService(), HasSelectedItem);
+            DeleteCommand = new DelegateCommand(o => DeleteService(), HasSelectedItem);
             StartWithArgumentsCommand =
                 new DelegateCommand(o => ExecuteServiceOperation(StartWithArgumentsService, true), HasSelectedItem);
             TerminateCommand = new DelegateCommand(o => ExecuteServiceOperation(TerminateService), HasSelectedItem);
@@ -79,6 +86,18 @@ namespace WS.Manager.Presentation.ViewModels
         }
 
         /// <summary>
+        /// Main windows title text.
+        /// </summary>
+        public string WindowTitle
+        {
+            get
+            {
+                var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+                return $"Service Manager. (by Sergey Vaulin, www.devowl.net) ver. {version}";
+            }
+        }
+
+        /// <summary>
         /// Refresh command.
         /// </summary>
         public DelegateCommand RefreshCommand { get; }
@@ -109,6 +128,11 @@ namespace WS.Manager.Presentation.ViewModels
         public DelegateCommand EditCommand { get; }
 
         /// <summary>
+        /// Delete command.
+        /// </summary>
+        public DelegateCommand DeleteCommand { get; }
+        
+        /// <summary>
         /// Exit command.
         /// </summary>
         public DelegateCommand ExitCommand { get; } = new DelegateCommand(o => { Environment.Exit(0); });
@@ -132,9 +156,12 @@ namespace WS.Manager.Presentation.ViewModels
 
         private void RefreshTimerTick(object sender, EventArgs arg)
         {
-            foreach (var service in Services.ToArray())
+            lock (_refreshSyncObject)
             {
-                service.Refresh();
+                foreach (var service in Services.ToArray())
+                {
+                    service.Refresh();
+                }
             }
         }
 
@@ -154,6 +181,22 @@ namespace WS.Manager.Presentation.ViewModels
             var editor = new EditServiceWindow(SelectedService) { Owner = Application.Current.MainWindow };
             editor.ShowDialog();
             SelectedService.EntireRefresh();
+        }
+
+        private void DeleteService()
+        {
+            if (MessageBox.Show(
+                    $"Are you sure you wanna to delete service?\n\r\"{SelectedService.DisplayName}\"",
+                    WarrningText,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                lock (_refreshSyncObject)
+                {
+                    WinServiceUtils.Uninstall(SelectedService.ServiceName);
+                    Services.Remove(SelectedService);
+                }
+            }
         }
 
         private void StartWithArgumentsService()
@@ -201,7 +244,7 @@ namespace WS.Manager.Presentation.ViewModels
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                MessageBox.Show(exception.Message, WarrningText, MessageBoxButton.OK, MessageBoxImage.Asterisk);
             }
             finally
             {

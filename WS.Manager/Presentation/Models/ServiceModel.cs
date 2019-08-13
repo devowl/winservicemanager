@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.ServiceProcess;
 
 using WS.Manager.Prism;
@@ -134,6 +135,7 @@ namespace WS.Manager.Presentation.Models
             RaisePropertyChanged(() => DisplayName);
             RaisePropertyChanged(() => Status);
             RaisePropertyChanged(() => StartupType);
+            RaisePropertyChanged(() => UserName);
 
             _description = null;
             RaisePropertyChanged(() => Description);

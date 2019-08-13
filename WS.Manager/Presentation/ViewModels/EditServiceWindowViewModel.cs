@@ -1,6 +1,4 @@
-﻿using System.ServiceProcess;
-
-using WS.Manager.Presentation.Controls.ViewModels;
+﻿using WS.Manager.Presentation.Controls.ViewModels;
 using WS.Manager.Presentation.Models;
 using WS.Manager.Presentation.Windows;
 using WS.Manager.Prism;
@@ -21,7 +19,7 @@ namespace WS.Manager.Presentation.ViewModels
 
         private string _displayName;
 
-        private bool _hasChanges = false;
+        private readonly string _name; 
 
         /// <summary>
         /// Constructor for <see cref="EditServiceWindowViewModel"/>.
@@ -29,15 +27,15 @@ namespace WS.Manager.Presentation.ViewModels
         public EditServiceWindowViewModel(ServiceModel serviceModel)
         {
             _serviceModel = serviceModel;
-            Description = serviceModel.Description;
-            DisplayName = serviceModel.DisplayName;
-            
-            ServiceUser = new ServiceUserDetailsViewModel(serviceModel.UserName);
-            ServiceUser.PropertyChanged += (sender, args) => Changed();
+            _description = serviceModel.Description;
+            _displayName = serviceModel.DisplayName;
+            _name = serviceModel.ServiceName;
 
+            ServiceUser = new ServiceUserDetailsViewModel(serviceModel.UserName);
             ServiceFilePath = new ServiceFilePathViewModel(serviceModel.BinaryPathName);
             ServiceStartupType = new ServiceStartupTypeViewModel(serviceModel.StartupType);
-            OkCommand = new DelegateCommand(OkPressed, o => !string.IsNullOrEmpty(DisplayName));
+            ChangeCommand = new DelegateCommand(ChangePressed);
+            CancelCommand = new DelegateCommand(CancelPressed);
         }
 
         /// <summary>
@@ -45,17 +43,21 @@ namespace WS.Manager.Presentation.ViewModels
         /// </summary>
         public string Description
         {
-            get
-            {
-                return _description; 
-            }
+            get => _description;
 
             set
             {
-                Changed();
                 _description = value;
                 RaisePropertyChanged(() => Description);
             }
+        }
+
+        /// <summary>
+        /// Service name.
+        /// </summary>
+        public string Name
+        {
+            get => _name;
         }
 
         /// <summary>
@@ -63,14 +65,10 @@ namespace WS.Manager.Presentation.ViewModels
         /// </summary>
         public string DisplayName
         {
-            get
-            {
-                return _displayName; 
-            }
+            get => _displayName;
 
             set
             {
-                Changed();
                 _displayName = value;
                 RaisePropertyChanged(() => DisplayName);
             }
@@ -96,10 +94,7 @@ namespace WS.Manager.Presentation.ViewModels
         /// </summary>
         public bool? DialogResult
         {
-            get
-            {
-                return _dialogResult;
-            }
+            get => _dialogResult;
 
             set
             {
@@ -109,28 +104,34 @@ namespace WS.Manager.Presentation.ViewModels
         }
 
         /// <summary>
-        /// OK command.
+        /// Change command.
         /// </summary>
-        public DelegateCommand OkCommand { get; }
+        public DelegateCommand ChangeCommand { get; }
 
-        private void Changed()
+        /// <summary>
+        /// Cancel command.
+        /// </summary>
+        public DelegateCommand CancelCommand { get; }
+
+        private void CancelPressed(object obj)
         {
-            _hasChanges = true;
+            DialogResult = false;
         }
 
-        private void OkPressed(object obj)
+        private void ChangePressed(object obj)
         {
-            if (Description != _serviceModel.Description)
-            {
-                WinServiceUtils.ChangeServiceDescription(_serviceModel.ServiceName, Description);
-            }
+            WinServiceUtils.ChangeServiceDescription(_serviceModel.ServiceName, Description);
 
-            if (_hasChanges)
-            {
-                //WinServiceUtils.ChangeServiceDisplayName(_serviceModel.ServiceName, DisplayName,);
-            }
+            var password = ServiceUser.PasswordChanged ? ServiceUser.UserPassword : null;
+            WinServiceUtils.ChangeServiceProperties(
+                _serviceModel.ServiceName,
+                DisplayName,
+                ServiceStartupType.StartMode.ToServiceBootFlag(),
+                ServiceFilePath.ServiceFilePath,
+                ServiceUser.UserName,
+                password);
 
-            DialogResult = _hasChanges;
+            DialogResult = true;
         }
     }
 }

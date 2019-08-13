@@ -92,8 +92,14 @@ namespace WS.Manager.Presentation.Controls.ViewModels
             set
             {
                 _userPassword = value;
+                PasswordChanged = true;
                 RaisePropertyChanged(() => UserPassword);
             }
         }
+
+        /// <summary>
+        /// Password changed flag.
+        /// </summary>
+        public bool PasswordChanged { get; private set; }
     }
 }

@@ -9,10 +9,9 @@
         xmlns:prism="clr-namespace:WS.Manager.Prism"
         xmlns:viewModels="clr-namespace:WS.Manager.Presentation.ViewModels"
         xmlns:views="clr-namespace:WS.Manager.Presentation.Views"
-        xmlns:controls="clr-namespace:WS.Manager.Presentation.Controls"
         xmlns:views1="clr-namespace:WS.Manager.Presentation.Controls.Views"
         x:Name="ServiceWindow"
-        Title="Service Manager. (by Sergey Vaulin, www.devowl.net)"
+        Title="{Binding WindowTitle, Mode=OneTime}"
         Width="725"
         Height="550"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
@@ -69,7 +68,10 @@
                         <MenuItem Command="{Binding StopCommand}" Header="Stop" />
                         <MenuItem Command="{Binding TerminateCommand}" Header="Terminate" />
                         <Separator />
-                        <MenuItem Command="{Binding EditCommand}" Header="Edit" />
+                        <MenuItem Header="Modify">
+                            <MenuItem Command="{Binding EditCommand}" Header="Edit" />
+                            <MenuItem Command="{Binding DeleteCommand}" Header="Delete" />
+                        </MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListView.View>
@@ -90,6 +92,10 @@
                                         DisplayMemberBinding="{Binding StartupType,
                                                                        Mode=OneWay}"
                                         Header="Startup Type" />
+                        <GridViewColumn Width="100"
+                                        DisplayMemberBinding="{Binding UserName,
+                                                                       Mode=OneWay}"
+                                        Header="Log On As" />
                         <GridViewColumn Width="405"
                                         DisplayMemberBinding="{Binding Description,
                                                                        Mode=OneWay}"
