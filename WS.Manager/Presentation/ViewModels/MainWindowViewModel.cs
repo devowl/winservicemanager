@@ -31,7 +31,7 @@ namespace WS.Manager.Presentation.ViewModels
 
         private const string WarrningText = "Warrning";
 
-        private object _refreshSyncObject = new object();
+        private readonly object _refreshSyncObject = new object();
 
         /// <summary>
         /// Constructor for <see cref="MainWindowViewModel"/>.
@@ -41,11 +41,12 @@ namespace WS.Manager.Presentation.ViewModels
             RefreshCommand = new DelegateCommand(async o => await RefreshAsync());
             StartCommand = new DelegateCommand(o => ExecuteServiceOperation(StartService), HasSelectedItem);
             StopCommand = new DelegateCommand(o => ExecuteServiceOperation(StopService), HasSelectedItem);
-            EditCommand = new DelegateCommand(o => EditService(), HasSelectedItem);
+            EditCommand = new DelegateCommand(o => ExecuteServiceOperation(EditService, true), HasSelectedItem);
             DeleteCommand = new DelegateCommand(o => DeleteService(), HasSelectedItem);
             StartWithArgumentsCommand =
                 new DelegateCommand(o => ExecuteServiceOperation(StartWithArgumentsService, true), HasSelectedItem);
             TerminateCommand = new DelegateCommand(o => ExecuteServiceOperation(TerminateService), HasSelectedItem);
+            CreateCommand = new DelegateCommand(o => ExecuteServiceOperation(CreateService, true));
             Dispatcher.CurrentDispatcher.BeginInvoke(new Action(async () => await RefreshAsync()));
             _refreshTimer.Tick += RefreshTimerTick;
             _refreshTimer.Start();
@@ -128,6 +129,11 @@ namespace WS.Manager.Presentation.ViewModels
         public DelegateCommand EditCommand { get; }
 
         /// <summary>
+        /// Create command.
+        /// </summary>
+        public DelegateCommand CreateCommand { get; }
+        
+        /// <summary>
         /// Delete command.
         /// </summary>
         public DelegateCommand DeleteCommand { get; }
@@ -172,15 +178,17 @@ namespace WS.Manager.Presentation.ViewModels
 
         private void SelectedItemChanged()
         {
-            new List<DelegateCommand> { StartCommand, StopCommand, EditCommand, TerminateCommand, StartWithArgumentsCommand }.ForEach(
+            new List<DelegateCommand> { StartCommand, StopCommand, EditCommand, TerminateCommand, StartWithArgumentsCommand, CreateCommand, DeleteCommand }.ForEach(
                 c => c.RaiseCanExecuteChanged());
         }
 
         private void EditService()
         {
-            var editor = new EditServiceWindow(SelectedService) { Owner = Application.Current.MainWindow };
-            editor.ShowDialog();
-            SelectedService.EntireRefresh();
+            var editor = new CreateOrEditServiceWindow(SelectedService) { Owner = Application.Current.MainWindow };
+            if (editor.ShowDialog().GetValueOrDefault())
+            {
+                SelectedService.EntireRefresh();
+            }
         }
 
         private void DeleteService()
@@ -209,6 +217,20 @@ namespace WS.Manager.Presentation.ViewModels
                 var userInput = dataContext.UserInput;
                 var arguments = ServiceUtils.CommandLineToArgs(userInput);
                 SelectedService.Controller.Start(arguments);
+            }
+        }
+
+        private void CreateService()
+        {
+            var editor = new CreateOrEditServiceWindow() { Owner = Application.Current.MainWindow };
+            if (editor.ShowDialog().GetValueOrDefault())
+            {
+                ServiceRosterRefresh();
+                lock (_refreshSyncObject)
+                {
+                    var serviceName = editor.Context.ServiceName;
+                    SelectedService = Services.FirstOrDefault(service => service.ServiceName == serviceName);
+                }
             }
         }
 

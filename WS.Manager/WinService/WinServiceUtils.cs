@@ -192,12 +192,14 @@ namespace WS.Manager.WinService
         /// </summary>
         /// <param name="serviceName">Service name.</param>
         /// <param name="displayName">Display name.</param>
+        /// <param name="bootFlag">Service boot flag value.</param>
         /// <param name="fileName">Executable file path.</param>
         /// <param name="login">Service account login.</param>
         /// <param name="password">Service account password.</param>
         public static void Install(
             string serviceName,
             string displayName,
+            ServiceBootFlag bootFlag,
             string fileName,
             string login,
             string password)
@@ -206,7 +208,8 @@ namespace WS.Manager.WinService
                 var serviceObject = GetServiceObject(
                     serviceName,
                     ScmAccessRights.AllAccess,
-                    ServiceAccessRights.AllAccess))
+                    ServiceAccessRights.AllAccess,
+                    false))
             {
                 var service = serviceObject.Service;
                 if (service == IntPtr.Zero)
@@ -217,7 +220,7 @@ namespace WS.Manager.WinService
                         displayName,
                         ServiceAccessRights.AllAccess,
                         ServiceType.SERVICE_WIN32_OWN_PROCESS,
-                        ServiceBootFlag.AutoStart,
+                        bootFlag,
                         ServiceError.Normal,
                         fileName,
                         null,
@@ -338,8 +341,6 @@ namespace WS.Manager.WinService
                 {
                     throw new ApplicationException("Service not installed.");
                 }
-
-                return new ServiceObject();
             }
 
             return new ServiceObject(scm, service);

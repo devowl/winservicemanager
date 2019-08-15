@@ -101,17 +101,14 @@
     <Compile Include="Presentation\Controls\Views\ServiceUserDetails.xaml.cs">
       <DependentUpon>ServiceUserDetails.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\Converters\InverseBooleanConverter.cs" />
     <Compile Include="Presentation\Converters\NullToVisibilityConverter.cs" />
-    <Compile Include="Presentation\ViewModels\CreateServiceWindowViewModel.cs" />
-    <Compile Include="Presentation\ViewModels\EditServiceWindowViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\CreateOrEditServiceWindowViewModel.cs" />
     <Compile Include="Presentation\ViewModels\ServiceParametersWindowViewModel.cs" />
     <Compile Include="Presentation\Controls\ViewModels\ServiceFilePathViewModel.cs" />
     <Compile Include="Presentation\Controls\ViewModels\ServiceUserDetailsViewModel.cs" />
-    <Compile Include="Presentation\Windows\CreateServiceWindow.xaml.cs">
-      <DependentUpon>CreateServiceWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\Windows\EditServiceWindow.xaml.cs">
-      <DependentUpon>EditServiceWindow.xaml</DependentUpon>
+    <Compile Include="Presentation\Windows\CreateOrEditServiceWindow.xaml.cs">
+      <DependentUpon>CreateOrEditServiceWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Windows\ServiceParametersWindow.xaml.cs">
       <DependentUpon>ServiceParametersWindow.xaml</DependentUpon>
@@ -153,11 +150,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Presentation\Windows\CreateServiceWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Presentation\Windows\EditServiceWindow.xaml">
+    <Page Include="Presentation\Windows\CreateOrEditServiceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

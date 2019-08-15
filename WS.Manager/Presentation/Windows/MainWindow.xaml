@@ -29,6 +29,7 @@
             <Menu Height="25"
                   VerticalAlignment="Top"
                   DockPanel.Dock="Top">
+                <MenuItem Items/>
                 <MenuItem Header="Service">
                     <MenuItem Header="New" />
                     <MenuItem Command="{Binding EditCommand}" Header="Edit" />
@@ -69,6 +70,7 @@
                         <MenuItem Command="{Binding TerminateCommand}" Header="Terminate" />
                         <Separator />
                         <MenuItem Header="Modify">
+                            <MenuItem Command="{Binding CreateCommand}" Header="Create" />
                             <MenuItem Command="{Binding EditCommand}" Header="Edit" />
                             <MenuItem Command="{Binding DeleteCommand}" Header="Delete" />
                         </MenuItem>
