@@ -28,15 +28,29 @@ namespace WS.Manager.Presentation.Models
         }
 
         /// <summary>
-        /// Service account name.
+        /// Has full access to service.
         /// </summary>
-        public string UserName
+        public bool HasFullAccess
         {
+            [MethodImpl(MethodImplOptions.NoOptimization)]
             get
             {
-                return _serviceConfig?.lpServiceStartName;
+                try
+                {
+                    var handle = Controller.ServiceHandle;
+                    return true;
+                }
+                catch (InvalidOperationException)
+                {
+                    return false;
+                }
             }
         }
+
+        /// <summary>
+        /// Service account name.
+        /// </summary>
+        public string UserName => _serviceConfig?.lpServiceStartName;
 
         /// <summary>
         /// Service controller.
@@ -46,53 +60,28 @@ namespace WS.Manager.Presentation.Models
         /// <summary>
         /// Service description.
         /// </summary>
-        public string Description
-        {
-            get
-            {
-                return _description ??
-                       (_description = WinServiceUtils.GetServiceDescription(Controller.ServiceName) ?? string.Empty);
-            }
-        }
+        public string Description =>
+            _description ??
+            (_description = WinServiceUtils.GetServiceDescription(Controller.ServiceName) ?? string.Empty);
 
         /// <summary>
         /// Binary file path.
         /// </summary>
-        public string BinaryPathName
-        {
-            get
-            {
-                return _serviceConfig?.lpBinaryPathName;
-            }
-        }
+        public string BinaryPathName => _serviceConfig?.lpBinaryPathName;
 
         /// <summary>
         /// Service startup type.
         /// </summary>
-        public ServiceStartMode? StartupType
-        {
-            get
-            {
-                return _serviceConfig?.dwStartType;
-            }
-        }
+        public ServiceStartMode? StartupType => _serviceConfig?.dwStartType;
 
         /// <summary>
         /// Service status.
         /// </summary>
-        public string Status
-        {
-            get
-            {
-                if (Controller.Status == ServiceControllerStatus.Stopped)
-                {
-                    return string.Empty;
-                }
+        public string Status =>
+            Controller.Status == ServiceControllerStatus.Stopped
+                ? string.Empty
+                : Controller.Status.ToString();
 
-                return Controller.Status.ToString();
-            }
-        }
-        
         /// <summary>
         /// Service full name.
         /// </summary>
@@ -123,7 +112,7 @@ namespace WS.Manager.Presentation.Models
         /// </summary>
         public void EntireRefresh()
         {
-            // Here we have a bug. If i change Display name Controller doesn't refresh it.
+            // TODO Here we have a bug. If i change Display name Controller doesn't refresh it, so we retake service
             Controller = ServiceController.GetServices().Single(s => s.ServiceName == Controller.ServiceName);
             WinServiceUtils.TryGetServiceConfig(Controller.ServiceName, out _serviceConfig);
             RaisePropertiesChanged();

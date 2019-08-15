@@ -49,6 +49,15 @@ namespace WS.Manager.Presentation.Behaviors
             }
 
             AssociatedObject.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(OnColumnClick));
+            AssociatedObject.SelectionChanged += SelectionChanged;
+        }
+
+        private void SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AssociatedObject.SelectedItem != null)
+            {
+                AssociatedObject.ScrollIntoView(AssociatedObject.SelectedItem);
+            }
         }
 
         /// <inheritdoc/>

@@ -5,8 +5,6 @@
              xmlns:local="clr-namespace:WS.Manager.Presentation.Controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="clr-namespace:WS.Manager.Presentation.Models"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behaviors="clr-namespace:WS.Manager.Presentation.Behaviors"
              d:DataContext="{d:DesignInstance models:ServiceModel}"
              d:DesignHeight="120"
              d:DesignWidth="500"
@@ -42,6 +40,7 @@
         </StackPanel>
         <DockPanel Grid.Column="1" Style="{StaticResource BlockGroup}">
             <Label Content="Description" DockPanel.Dock="Top"/>
+            <TextBox Style="{StaticResource LabelTexBoxStyle}" Text="{Binding BinaryPathName, Mode=OneWay}" DockPanel.Dock="Bottom" />
             <TextBox Style="{StaticResource LabelTexBoxStyle}" Text="{Binding Description, Mode=OneWay}" />
         </DockPanel>
     </Grid>

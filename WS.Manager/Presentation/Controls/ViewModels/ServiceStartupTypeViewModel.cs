@@ -17,11 +17,7 @@ namespace WS.Manager.Presentation.Controls.ViewModels
         /// </summary>
         public ServiceStartupTypeViewModel(ServiceStartMode? startMode)
         {
-            if (startMode.HasValue)
-            {
-                _startMode = startMode.Value;
-            }
-            
+            _startMode = startMode ?? ServiceStartMode.Automatic;
             IsEditable = startMode.HasValue;
         }
 

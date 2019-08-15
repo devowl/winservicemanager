@@ -29,15 +29,17 @@
             <Menu Height="25"
                   VerticalAlignment="Top"
                   DockPanel.Dock="Top">
-                <MenuItem Items/>
                 <MenuItem Header="Service">
-                    <MenuItem Header="New" />
-                    <MenuItem Command="{Binding EditCommand}" Header="Edit" />
-                    <MenuItem Header="Open Project">
-                        <MenuItem Header="WinForms" />
-                        <MenuItem Header="WPF" />
-                    </MenuItem>
+                    <MenuItem Command="{Binding StartCommand}" Header="Start" />
+                    <MenuItem Command="{Binding StartWithArgumentsCommand}" Header="Start with arguments" />
+                    <MenuItem Command="{Binding StopCommand}" Header="Stop" />
+                    <MenuItem Command="{Binding TerminateCommand}" Header="Terminate" />
                     <Separator />
+                    <MenuItem Header="Modify">
+                        <MenuItem Command="{Binding CreateCommand}" Header="Create" />
+                        <MenuItem Command="{Binding EditCommand}" Header="Edit" />
+                        <MenuItem Command="{Binding DeleteCommand}" Header="Delete" />
+                    </MenuItem>
                     <MenuItem Command="{Binding ExitCommand}" Header="Exit" />
                 </MenuItem>
             </Menu>
@@ -61,8 +63,7 @@
                       ItemsSource="{Binding Services}"
                       SelectedItem="{Binding SelectedService}">
                 <ListView.ContextMenu>
-                    <ContextMenu Name="ZoneIformationList"
-                                 Background="WhiteSmoke"
+                    <ContextMenu Background="WhiteSmoke"
                                  StaysOpen="true">
                         <MenuItem Command="{Binding StartCommand}" Header="Start" />
                         <MenuItem Command="{Binding StartWithArgumentsCommand}" Header="Start with arguments" />

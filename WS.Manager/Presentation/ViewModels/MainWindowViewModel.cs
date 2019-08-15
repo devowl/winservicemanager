@@ -46,7 +46,7 @@ namespace WS.Manager.Presentation.ViewModels
             StartWithArgumentsCommand =
                 new DelegateCommand(o => ExecuteServiceOperation(StartWithArgumentsService, true), HasSelectedItem);
             TerminateCommand = new DelegateCommand(o => ExecuteServiceOperation(TerminateService), HasSelectedItem);
-            CreateCommand = new DelegateCommand(o => ExecuteServiceOperation(CreateService, true));
+            CreateCommand = new DelegateCommand(o => CreateService());
             Dispatcher.CurrentDispatcher.BeginInvoke(new Action(async () => await RefreshAsync()));
             _refreshTimer.Tick += RefreshTimerTick;
             _refreshTimer.Start();
@@ -57,10 +57,7 @@ namespace WS.Manager.Presentation.ViewModels
         /// </summary>
         public ServiceModel SelectedService
         {
-            get
-            {
-                return _selectedService;
-            }
+            get => _selectedService;
             set
             {
                 _selectedService = value;
@@ -74,10 +71,7 @@ namespace WS.Manager.Presentation.ViewModels
         /// </summary>
         public ObservableCollection<ServiceModel> Services
         {
-            get
-            {
-                return _services;
-            }
+            get => _services;
 
             private set
             {
@@ -173,7 +167,7 @@ namespace WS.Manager.Presentation.ViewModels
 
         private bool HasSelectedItem(object obj)
         {
-            return SelectedService != null;
+            return SelectedService != null && SelectedService.HasFullAccess;
         }
 
         private void SelectedItemChanged()

@@ -50,9 +50,7 @@ namespace WS.Manager.WinService
                     ServiceAccessRights.AllAccess,
                     false))
             {
-                int neededBytes = 0;
-
-                QueryServiceConfig(serviceObject.Service, IntPtr.Zero, 0, out neededBytes);
+                QueryServiceConfig(serviceObject.Service, IntPtr.Zero, 0, out var neededBytes);
                 if (Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER)
                 {
                     IntPtr ptr = IntPtr.Zero;
@@ -447,20 +445,6 @@ namespace WS.Manager.WinService
             ServiceStatus status = new ServiceStatus();
             ControlService(service, ServiceControl.Stop, status);
             WaitForServiceStatus(service, ServiceState.StopPending, ServiceState.Stopped);
-        }
-
-        private static string GetServiceRegistryProperty(string serviceName, string propertyName)
-        {
-            var serviceRegisrty = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{serviceName}");
-            if (serviceRegisrty == null)
-            {
-                return string.Empty;
-            }
-
-            using (serviceRegisrty)
-            {
-                return serviceRegisrty.GetValue(propertyName)?.ToString();
-            }
         }
 
         private static bool WaitForServiceStatus(IntPtr service, ServiceState waitStatus, ServiceState desiredStatus)

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using System.ServiceProcess;
 
 using WS.Manager.Presentation.Controls.ViewModels;
@@ -44,6 +45,23 @@ namespace WS.Manager.Presentation.ViewModels
             ServiceStartupType = new ServiceStartupTypeViewModel(startupType);
             CreateOrChangeCommand = new DelegateCommand(CreateOrChangePressed, CanCreateOrChangeExecute);
             CancelCommand = new DelegateCommand(CancelPressed);
+
+            var viewModels = new INotifyPropertyChanged[]
+            {
+                this,
+                ServiceFilePath,
+                ServiceStartupType
+            };
+
+            foreach (var viewModel in viewModels)
+            {
+                viewModel.PropertyChanged += PropertyChangedHandler;
+            }
+        }
+
+        private void PropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            CreateOrChangeCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
