@@ -46,7 +46,7 @@
             <StatusBar DockPanel.Dock="Bottom">
                 <StatusBarItem>
                     <TextBlock>
-                        Service count:<Run Text="{Binding Path=Services.Count, Mode=OneWay}" />
+                        Service count: <Run Text="{Binding Path=Services.Count, Mode=OneWay}" />
                     </TextBlock>
                 </StatusBarItem>
             </StatusBar>
