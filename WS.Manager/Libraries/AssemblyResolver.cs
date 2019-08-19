@@ -13,7 +13,7 @@ namespace WS.Manager.Libraries
         private readonly IDictionary<string, byte[]> _assemblies = new Dictionary<string, byte[]>()
         {
             { "System.Windows.Interactivity, PublicKeyToken=31bf3856ad364e35", AssemblyResources.System_Windows_Interactivity },
-            { "System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", AssemblyResources.System_Windows_Interactivity }
+            { "System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35", AssemblyResources.System_Windows_Interactivity }
         };
 
         /// <summary>
