@@ -280,7 +280,7 @@ namespace WS.Manager.WinService
                     ScmAccessRights.Connect,
                     ServiceAccessRights.QueryStatus | ServiceAccessRights.Stop))
             {
-                if (GetServiceStatus(serviceObject.Service) == ServiceState.Running)
+                if (GetServiceStatus(serviceObject.Service) != ServiceState.Stopped)
                 {
                     StopService(serviceObject.Service);
                 }
@@ -295,7 +295,7 @@ namespace WS.Manager.WinService
         {
             using(var serviceObject = GetServiceObject(serviceName, ScmAccessRights.AllAccess, ServiceAccessRights.AllAccess))
             {
-                if (GetServiceStatus(serviceObject.Service) == ServiceState.Running)
+                if (GetServiceStatus(serviceObject.Service) != ServiceState.Stopped)
                 {
                     TerminateService(serviceName);
                 }
