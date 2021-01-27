@@ -41,7 +41,7 @@ namespace WS.Manager.Presentation.Controls.ViewModels
                 CheckFileExists = true,
                 CheckPathExists = true,
                 Multiselect = false,
-                Filter = "Executable files|*.exe",
+                Filter = "All files|*.*",
                 Title = "Choose executable file"
             };
 
