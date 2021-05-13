@@ -1,5 +1,4 @@
-Утилита для создания\редактирование\удаления Windows Services.
+Create\Edit\Delete Windows Services utility.
 
-Ссылка на статью:
-
+Reference:
 https://www.devowl.net/2019/08/windows-service-create-edit-delete-servicesmsc.html
